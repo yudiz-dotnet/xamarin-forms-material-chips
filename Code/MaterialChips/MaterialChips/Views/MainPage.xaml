@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:Controls="clr-namespace:MaterialChips.Controls"
+             x:Class="MaterialChips.Views.MainPage" Title="Material Chip Design">
+    <ContentPage.Content>
+        <ScrollView Grid.Row="0" Padding="10" HorizontalOptions="FillAndExpand" BackgroundColor="White" WidthRequest="50">
+            <Controls:FlowLayout x:Name="flChipView" Spacing="5" BackgroundColor="White"/>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
