@@ -4,145 +4,18 @@ This example is used to create marerial-chips design in xamarin forms MVVM. You 
 ![alt text](Data/iPhone-5s-screenshot.png "iOS screenshot")
 
 # Add Flowlayout Control Code
-    public class FlowLayout : Layout<View>
-    {
-        public static BindableProperty SpacingProperty = BindableProperty.Create("Spacing", typeof(Thickness), typeof(FlowLayout), new Thickness(6));
-
-        public Thickness Spacing
-        {
-            get { return (Thickness)GetValue(SpacingProperty); }
-            set { SetValue(SpacingProperty, value); InvalidateLayout(); }
-        }
-
-        protected override void LayoutChildren(double x, double y, double width, double height)
-        {
-            var layoutInfo = new LayoutInfo(Spacing);
-            layoutInfo.ProcessLayout(Children, width);
-
-            for (int i = 0; i < layoutInfo.Bounds.Count; i++)
-            {
-                if (!Children[i].IsVisible)
-                {
-                    continue;
-                }
-                var bounds = layoutInfo.Bounds[i];
-                bounds.Left += x;
-                bounds.Top += y;
-                LayoutChildIntoBoundingRegion(Children[i], bounds);
-            }
-        }
-
-        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
-        {
-            var layoutInfo = new LayoutInfo(Spacing);
-            layoutInfo.ProcessLayout(Children, widthConstraint);
-            return new SizeRequest(new Size(widthConstraint, layoutInfo.HeightRequest));
-        }
-
-        public class LayoutInfo
-        {
-            double _x = 0;
-            double _y = 0;
-            double _rowHeight = 0;
-            Thickness _spacing;
-
-            public LayoutInfo(Thickness spacing)
-            {
-                _spacing = spacing;
-            }
-
-            public List<Rectangle> Bounds { get; private set; }
-
-            public double HeightRequest { get; private set; }
-
-            public void ProcessLayout(IList<View> views, double widthConstraint)
-            {
-                Bounds = new List<Rectangle>();
-                var sizes = SizeViews(views, widthConstraint);
-                LayoutViews(views, sizes, widthConstraint);
-            }
-
-            private List<Rectangle> SizeViews(IList<View> views, double widthConstraint)
-            {
-                var sizes = new List<Rectangle>();
-                foreach (var view in views)
-                {
-                    var sizeRequest = view.Measure(widthConstraint, double.PositiveInfinity).Request;
-                    var viewWidth = sizeRequest.Width;
-                    var viewHeight = sizeRequest.Height;
-
-                    if (viewWidth > widthConstraint)
-                        viewWidth = widthConstraint;
-
-                    sizes.Add(new Rectangle(0, 0, viewWidth, viewHeight));
-                }
-                return sizes;
-            }
-
-            private void LayoutViews(IList<View> views, List<Rectangle> sizes, double widthConstraint)
-            {
-                Bounds = new List<Rectangle>();
-                _x = 0d;
-                _y = 0d;
-                HeightRequest = 0;
-
-                for (int i = 0; i < views.Count(); i++)
-                {
-                    if (!views[i].IsVisible)
-                    {
-                        Bounds.Add(new Rectangle(0, 0, 0, 0));
-                        continue;
-                    }
-
-                    var sizeRect = sizes[i];
-
-                    CheckNewLine(sizeRect.Width, widthConstraint);
-                    UpdateRowHeight(sizeRect.Height);
-
-                    var bound = new Rectangle(_x, _y, sizeRect.Width, sizeRect.Height);
-                    Bounds.Add(bound);
-
-                    _x += bound.Width;
-                    _x += _spacing.HorizontalThickness;
-                }
-                HeightRequest += _rowHeight;
-            }
-
-            private void CheckNewLine(double viewWidth, double widthConstraint)
-            {
-                if (_x + viewWidth > widthConstraint)
-                {
-                    _y += _rowHeight + _spacing.VerticalThickness;
-                    HeightRequest = _y;
-                    _x = 0;
-                    _rowHeight = 0;
-                }
-            }
-
-            private void UpdateRowHeight(double viewHeight)
-            {
-                if (viewHeight > _rowHeight)
-                    _rowHeight = viewHeight;
-            }
-        }
-    }
+This flowlayout file is used to create view form Chips. It is like container which contains chips and align as per device size.
    
-  # Create Content Page
-  Add this code in your content page
-  
-    <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:Controls="clr-namespace:MaterialChips.Controls"
-             x:Class="MaterialChips.Views.MainPage" Title="Material Chip Design">
-    <ContentPage.Content>
+# Create Content Page
+  We have to use FlowLayout control in ContentPage. Here Below code is added that holds the content(Material Chips).
+
         <ScrollView Grid.Row="0" Padding="10" HorizontalOptions="FillAndExpand" BackgroundColor="White" WidthRequest="50">
             <Controls:FlowLayout x:Name="flChipView" Spacing="5" BackgroundColor="White"/>
         </ScrollView>
-    </ContentPage.Content>
-</ContentPage>
 
 # Add ViewModel 
-Here, you have to add BaseViewModel and copy the code of MainPageViewModel
+Now, add a code in ViewModel for load data in Material Chips. Here, I have created list of Item which we will add in Chips. 
+Here you can use list data as per you need. 
 
    public class MainPageViewModel : BaseViewModel
     {
@@ -177,33 +50,21 @@ Here, you have to add BaseViewModel and copy the code of MainPageViewModel
         }
     }
     
- # Add Code in mainpage.xml.cs
-    public partial class MainPage : ContentPage
-    {
-        #region Local Variables
-        Constants.ColorConstants color = new Constants.ColorConstants();
+ # Add Code in MainPage.xml.cs
+ In this page, first bind the ViewModel in List 
+   
         private ViewModels.MainPageViewModel _MainPageViewModel;
         public static List<Items> _ItemList;
-        #endregion
-
-        #region Constructor
+        
         public MainPage()
         {
             InitializeComponent();
             BindingContext = _MainPageViewModel = new ViewModels.MainPageViewModel(); // Binding ViewModel
-
-            On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);   // This is used to give space in iPhone X for safe Area
-
             _ItemList = _MainPageViewModel.ItemList;  // Binding Itemlist from Viewmodel List
-
-            foreach (var items in _ItemList)
-            {
-                flChipView.Children.Add(CreateRandomBoxview(items));  // Creating a chip with one value of ItemList
-            }
         }
-        #endregion
 
-        #region Functions For Create Chips
+In next step, Add CreateRandomBoxview function which creates new Chip for each data in List view.
+    
         private Frame CreateRandomBoxview(Items items)
         {
             var view = new Frame();    // Creating New View for design as chip
@@ -212,29 +73,6 @@ Here, you have to add BaseViewModel and copy the code of MainPageViewModel
             view.Padding = new Thickness(20, 10);
             view.CornerRadius = 20;
             view.HasShadow = false;
-
-            //Chip click event
-            var tapGestureRecognizer = new TapGestureRecognizer();
-            tapGestureRecognizer.Tapped += (s, e) =>
-            {
-                var frameSender = (Frame)s;
-                var labelDemo = (Label)frameSender.Content;
-                if (!items.IsClicked)
-                {
-                    view.BackgroundColor = (Color)color["White"];
-                    labelDemo.TextColor = (Color)color["Purple"];
-                    view.BorderColor = (Color)color["Purple"];
-                    items.IsClicked = true;
-                }
-                else if (items.IsClicked)
-                {
-                    view.BackgroundColor = (Color)color["Purple"];
-                    labelDemo.TextColor = (Color)color["White"];
-                    view.BorderColor = (Color)color["White"];
-                    items.IsClicked = false;
-                }
-            };
-            view.GestureRecognizers.Add(tapGestureRecognizer);
 
             // creating new child that holds the value of item list and add in View
             var label = new Label();
@@ -246,5 +84,26 @@ Here, you have to add BaseViewModel and copy the code of MainPageViewModel
             view.Content = label;
             return view;
         }
-        #endregion
-    }
+        
+You can also add GestureRecognizers for tapped events on chips. 
+        
+         private Frame CreateRandomBoxview(Items items)
+        {
+           ...
+            //Chip click event
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += (s, e) =>
+            {
+                var frameSender = (Frame)s;
+                //Write you logic here...
+            };
+            view.GestureRecognizers.Add(tapGestureRecognizer);
+           ...
+        }
+        
+And in last step, add code in default constructor for creating Chips desgn. See below code that will be add in Material Chips.
+
+        foreach (var items in _ItemList)
+        {
+           flChipView.Children.Add(CreateRandomBoxview(items));  // Creating a chip with one value of ItemList
+        }
