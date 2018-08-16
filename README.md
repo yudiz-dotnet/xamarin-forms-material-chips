@@ -17,7 +17,9 @@ This flowlayout file is used to create view form Chips. It is like container whi
 Now, add a code in ViewModel for load data in Material Chips. Here, I have created list of Item which we will add in Chips. 
 Here you can use list data as per you need. 
 
-   public class MainPageViewModel : BaseViewModel
+Here, code is written in ViewModels > MainPageViewModel.cs
+
+    public class MainPageViewModel : BaseViewModel
     {
         private List<Items> _ItemList = new List<Items>();
 
@@ -31,28 +33,23 @@ Here you can use list data as per you need.
         {
             ItemList = new List<Items>()
             {
+                ...
                 new Items{ItemName="One", IsClicked=true },
                 new Items{ItemName="Two", IsClicked=true },
                 new Items{ItemName="Three", IsClicked=false },
                 new Items{ItemName="Four", IsClicked=true },
                 new Items{ItemName="Five", IsClicked=false },
                 new Items{ItemName="Six", IsClicked=true },
-                new Items{ItemName="Seven", IsClicked=false },
-                new Items{ItemName="Eight", IsClicked=true },
-                new Items{ItemName="Nine", IsClicked=true },
-                new Items{ItemName="Ten", IsClicked=true },
-                new Items{ItemName="Eleven", IsClicked=false },
-                new Items{ItemName="Tewlve", IsClicked=true },
-                new Items{ItemName="Thirteen", IsClicked=true },
-                new Items{ItemName="Fourteen", IsClicked=true },
-                new Items{ItemName="Fifteen", IsClicked=false },
+                ...
+                // add items as per your requirement.
             };
         }
     }
     
  # Add Code in MainPage.xml.cs
  In this page, first bind the ViewModel in List 
-   
+ 
+        ...
         private ViewModels.MainPageViewModel _MainPageViewModel;
         public static List<Items> _ItemList;
         
@@ -62,9 +59,13 @@ Here you can use list data as per you need.
             BindingContext = _MainPageViewModel = new ViewModels.MainPageViewModel(); // Binding ViewModel
             _ItemList = _MainPageViewModel.ItemList;  // Binding Itemlist from Viewmodel List
         }
-
+        ...
+        
 In next step, Add CreateRandomBoxview function which creates new Chip for each data in List view.
     
+Here, code is written in MainPage.xml.cs file.
+
+        ...   
         private Frame CreateRandomBoxview(Items items)
         {
             var view = new Frame();    // Creating New View for design as chip
@@ -84,11 +85,14 @@ In next step, Add CreateRandomBoxview function which creates new Chip for each d
             view.Content = label;
             return view;
         }
+        ...
         
 You can also add GestureRecognizers for tapped events on chips. 
         
+Here, code is written in MainPage.xml.cs file in CreateRandomBoxview function.
+
          private Frame CreateRandomBoxview(Items items)
-        {
+         {
            ...
             //Chip click event
             var tapGestureRecognizer = new TapGestureRecognizer();
@@ -99,11 +103,17 @@ You can also add GestureRecognizers for tapped events on chips.
             };
             view.GestureRecognizers.Add(tapGestureRecognizer);
            ...
-        }
+         }
         
 And in last step, add code in default constructor for creating Chips desgn. See below code that will be add in Material Chips.
 
+Here, code is written in MainPage.xml.cs file in default constructor.
+
+        ...
         foreach (var items in _ItemList)
         {
            flChipView.Children.Add(CreateRandomBoxview(items));  // Creating a chip with one value of ItemList
         }
+        ...
+        
+Now, build and run application in device. It is created in MVVM architecture and data are filled dynemically.
