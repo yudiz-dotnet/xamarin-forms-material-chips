@@ -17,7 +17,7 @@ This flowlayout file is used to create view form Chips. It is like container whi
 Now, add a code in ViewModel for load data in Material Chips. Here, I have created list of Item which we will add in Chips. 
 Here you can use list data as per you need. 
 
-Here, code is written in ViewModels > MainPageViewModel.cs
+Here, code is written in [MainPageViewModel.cs](../master/Code/MaterialChips/MaterialChips/ViewModels/MainPageViewModel.cs)
 
     public class MainPageViewModel : BaseViewModel
     {
@@ -47,7 +47,7 @@ Here, code is written in ViewModels > MainPageViewModel.cs
     }
     
  # Add Code in MainPage.xml.cs
- In this page, first bind the ViewModel in List 
+ In this page, first bind the ViewModel in List. This code is written in [MainPage.xaml.cs](../master/Code/MaterialChips/MaterialChips/Views/MainPage.xaml.cs) 
  
         ...
         private ViewModels.MainPageViewModel _MainPageViewModel;
@@ -63,7 +63,7 @@ Here, code is written in ViewModels > MainPageViewModel.cs
         
 In next step, Add CreateRandomBoxview function which creates new Chip for each data in List view.
     
-Here, code is written in MainPage.xml.cs file.
+Here, code is written in [MainPage.xaml.cs](../master/Code/MaterialChips/MaterialChips/Views/MainPage.xaml.cs)  file.
 
         ...   
         private Frame CreateRandomBoxview(Items items)
@@ -89,7 +89,7 @@ Here, code is written in MainPage.xml.cs file.
         
 You can also add GestureRecognizers for tapped events on chips. 
         
-Here, code is written in MainPage.xml.cs file in CreateRandomBoxview function.
+Here, code is written in [MainPage.xaml.cs](../master/Code/MaterialChips/MaterialChips/Views/MainPage.xaml.cs) file in CreateRandomBoxview function.
 
          private Frame CreateRandomBoxview(Items items)
          {
@@ -107,7 +107,7 @@ Here, code is written in MainPage.xml.cs file in CreateRandomBoxview function.
         
 And in last step, add code in default constructor for creating Chips desgn. See below code that will be add in Material Chips.
 
-Here, code is written in MainPage.xml.cs file in default constructor.
+Here, code is written in [MainPage.xaml.cs](../master/Code/MaterialChips/MaterialChips/Views/MainPage.xaml.cs) file in default constructor.
 
         ...
         foreach (var items in _ItemList)
